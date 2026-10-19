@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oasis of Innovation Technologies | API Portal & Services</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            accent: '#06b6d4',
+                            fb: '#1877F2',
+                            fbDark: '#0d65d9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Glassmorphism & custom glowing effects */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .glow-accent {
+            box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25);
+        }
+        /* Custom scrollbar for consoles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen selection:bg-cyan-500 selection:text-slate-950 relative overflow-x-hidden">
+
+    <!-- Ambient background gradient spheres -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+    <div class="fixed bottom-10 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Brand / Logo -->
+                <a href="#home" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform duration-300">
+                        <i class="fa-solid fa-atom text-xl animate-spin" style="animation-duration: 16s;"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg sm:text-xl font-bold tracking-tight text-white block leading-tight">Oasis of Innovation</span>
+                        <span class="text-[10px] sm:text-xs text-cyan-400 font-medium tracking-widest uppercase">Technologies & Hub</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                    <a href="#services" class="hover:text-cyan-400 transition-colors">Services</a>
+                    <a href="#facebook-portal" class="hover:text-cyan-400 transition-colors">Graph API Portal</a>
+                    <a href="#oauth-guide" class="hover:text-cyan-400 transition-colors">OAuth Redirect Setup</a>
+                    <a href="#contact" class="hover:text-cyan-400 transition-colors">Contact</a>
+                </nav>
+
+                <!-- Auth Action Button -->
+                <div class="hidden sm:flex items-center space-x-4">
+                    <button id="navLoginBtn" onclick="toggleMetaAuth()" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-brand-fb hover:from-blue-500 hover:to-blue-600 text-white font-medium text-xs sm:text-sm shadow-md hover:shadow-cyan-500/20 transition-all duration-300 transform active:scale-95">
+                        <i class="fa-brands fa-facebook text-base"></i>
+                        <span id="navLoginText">Connect Meta App</span>
+                    </button>
+                </div>
+
+                <!-- Mobile menu toggle -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="p-2 text-slate-400 hover:text-white focus:outline-none" aria-label="Toggle Navigation">
+                        <i id="mobileMenuIcon" class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden px-4 pt-2 pb-6 space-y-3 bg-slate-900/95 border-b border-slate-800 backdrop-blur-lg">
+            <a href="#services" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">Services</a>
+            <a href="#facebook-portal" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">Graph API Portal</a>
+            <a href="#oauth-guide" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">OAuth Redirect Setup</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">Contact</a>
+            <button onclick="toggleMetaAuth(); toggleMobileMenu();" class="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-brand-fb text-white font-medium text-sm">
+                <i class="fa-brands fa-facebook"></i>
+                <span id="mobileLoginText">Connect Meta App</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Notification Banner / Toast -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 hidden transition-all duration-300 transform translate-y-4 opacity-0 max-w-sm">
+        <div class="glass-panel border-l-4 border-cyan-400 p-4 rounded-xl shadow-2xl flex items-start space-x-3">
+            <div id="toastIcon" class="text-cyan-400 text-lg mt-0.5">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <p id="toastTitle" class="text-sm font-semibold text-white">Notification</p>
+                <p id="toastMessage" class="text-xs text-slate-300 mt-0.5">Details goes here.</p>
+            </div>
+            <button onclick="closeToast()" class="text-slate-400 hover:text-white ml-auto">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-700/50 text-cyan-300 text-xs font-semibold tracking-wide">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span>Meta App ID: 1537497938182718 Ready</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                        Empowering Growth with <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Intelligent Tech & API Solutions</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Welcome to <strong class="text-slate-200">Oasis of Innovation Hub</strong>. We engineer custom enterprise software, intelligent social automation, and seamless Facebook & WhatsApp business integrations.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#facebook-portal" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-cyan-500/25 flex items-center justify-center space-x-2 transition-all">
+                            <span>Launch API Console</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="#oauth-guide" class="w-full sm:w-auto px-7 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cyan-500/50 text-slate-300 hover:text-white font-medium text-sm flex items-center justify-center space-x-2 transition-all">
+                            <i class="fa-solid fa-link text-cyan-400"></i>
+                            <span>Configure Redirect URIs</span>
+                        </a>
+                    </div>
+
+                    <!-- Meta Badges -->
+                    <div class="pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-400">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-cyan-400"></i> OAuth 2.0 Secure</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-400"></i> Graph API v19.0+ Ready</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-check-circle text-emerald-400"></i> Business App Verified</span>
+                    </div>
+                </div>
+
+                <!-- Live Meta App Status Card Mockup -->
+                <div class="lg:col-span-5">
+                    <div class="glass-panel p-6 rounded-2xl relative glow-accent border border-cyan-500/30">
+                        <!-- Card Header -->
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-lg bg-blue-900/60 flex items-center justify-center text-cyan-300 font-bold">
+                                    <i class="fa-solid fa-atom"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold text-white">Oasis of innovation hub</h3>
+                                    <p class="text-[11px] text-slate-400">App ID: <span class="font-mono text-cyan-300">1537497938182718</span></p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-950/80 text-emerald-400 border border-emerald-800/50">
+                                <i class="fa-solid fa-circle text-[8px] mr-1 animate-pulse"></i>Development
+                            </span>
+                        </div>
+
+                        <!-- Card Metrics -->
+                        <div class="grid grid-cols-2 gap-3 my-4">
+                            <div class="p-3 bg-slate-900/70 rounded-xl border border-slate-800">
+                                <p class="text-[10px] text-slate-400 uppercase tracking-wider">Application Rate Limit</p>
+                                <p class="text-lg font-bold text-cyan-400 mt-1">0% Used</p>
+                                <p class="text-[10px] text-emerald-400">100% capacity remaining</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/70 rounded-xl border border-slate-800">
+                                <p class="text-[10px] text-slate-400 uppercase tracking-wider">OAuth State</p>
+                                <p id="heroAuthBadge" class="text-lg font-bold text-amber-400 mt-1">Standby</p>
+                                <p class="text-[10px] text-slate-400">Ready to authenticate</p>
+                            </div>
+                        </div>
+
+                        <!-- Active Products List -->
+                        <div class="space-y-2 pt-2">
+                            <p class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Active Modules</p>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-900/40 text-xs">
+                                <span class="flex items-center gap-2"><i class="fa-brands fa-facebook text-blue-500"></i> Facebook Login for Business</span>
+                                <span class="text-emerald-400 font-mono text-[11px]">Enabled</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-900/40 text-xs">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-file-pen text-cyan-400"></i> Graph API Page Publishing</span>
+                                <span class="text-emerald-400 font-mono text-[11px]">Configured</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-900/40 text-xs">
+                                <span class="flex items-center gap-2"><i class="fa-brands fa-whatsapp text-green-400"></i> WhatsApp Business API</span>
+                                <span class="text-slate-400 font-mono text-[11px]">Available</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-4 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">App Type: <span class="text-slate-200">Business</span></span>
+                            <a href="#facebook-portal" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-medium">
+                                Simulate Post <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Facebook Graph API & Portal Playground -->
+    <section id="facebook-portal" class="py-16 md:py-24 bg-slate-900/50 border-y border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-900/40 text-cyan-400 border border-blue-700/50">
+                    Live Meta Integration Studio
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Facebook Page Graph API Simulator</h2>
+                <p class="text-slate-400 text-sm sm:text-base mt-2">
+                    Test your Meta App configuration without breaking live channels. Draft posts, simulate <code class="text-cyan-300 font-mono">POST /{page-id}/feed</code> calls, and inspect real-time JSON payloads.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Side: Interactive Post Publisher -->
+                <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-md">
+                                OI
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white text-base">Oasis of Innovation Page</h4>
+                                <span class="text-xs text-slate-400 flex items-center gap-1">
+                                    <i class="fa-solid fa-earth-africa text-slate-400"></i> Public Page &bull; Token: <span id="tokenPreview" class="text-cyan-400 font-mono">EAAW... (Simulated)</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Status badge -->
+                        <div id="authStatusPill" class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-950 border border-emerald-700 text-emerald-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Token Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Target Page Selector -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">Target Facebook Page / Endpoint</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <select id="targetEndpoint" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500" onchange="updateApiPreview()">
+                                <option value="me/feed">me/feed (Active Page Feed)</option>
+                                <option value="1537497938182718/feed">1537497938182718/feed (App Wall)</option>
+                                <option value="me/photos">me/photos (Photo Upload)</option>
+                            </select>
+                            <input type="text" id="customPageId" value="oasis.innovation.official" placeholder="Page Vanity/ID" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500" oninput="updateApiPreview()">
+                        </div>
+                    </div>
+
+                    <!-- Post Body Composer -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">Post Message (Content)</label>
+                            <span id="charCount" class="text-xs text-slate-400">128 chars</span>
+                        </div>
+                        <textarea id="postContent" rows="4" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition" placeholder="Write your Facebook Page post or update here..." oninput="updatePostPreview()">Excited to announce our new Cloud Automation & API integration service suite at Oasis of Innovation Technologies! Connect with us today.</textarea>
+                    </div>
+
+                    <!-- Post Extras: Media Link & Action Type -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Image / Link URL</label>
+                            <input type="url" id="postImageUrl" value="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500" placeholder="https://..." oninput="updatePostPreview()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Permissions Scope</label>
+                            <div class="text-xs bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-2 text-slate-400 font-mono flex items-center justify-between">
+                                <span>pages_manage_posts</span>
+                                <i class="fa-solid fa-lock text-cyan-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="submitGraphApiPost()" id="publishBtn" class="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/20 flex items-center justify-center space-x-2 transition-transform active:scale-95">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Execute POST /me/feed</span>
+                        </button>
+                        <button onclick="clearComposer()" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Side: Real-time Live Preview & Terminal Response -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <!-- Facebook Feed Card Preview -->
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                        <div class="flex items-center justify-between mb-3 text-xs text-slate-400">
+                            <span class="font-medium text-slate-300"><i class="fa-brands fa-facebook text-blue-500 mr-1.5"></i>Live Post Feed Preview</span>
+                            <span class="text-[11px] text-cyan-400">Real-time render</span>
+                        </div>
+
+                        <!-- Rendered Facebook Card -->
+                        <div class="bg-slate-900/90 rounded-xl border border-slate-800 p-4 space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white text-sm">
+                                    OI
+                                </div>
+                                <div>
+                                    <h5 class="text-sm font-semibold text-white">Oasis of Innovation</h5>
+                                    <p class="text-[11px] text-slate-400">Just now &bull; <i class="fa-solid fa-earth-americas text-[10px]"></i></p>
+                                </div>
+                            </div>
+                            <!-- Dynamic text preview -->
+                            <p id="livePreviewText" class="text-xs sm:text-sm text-slate-200 leading-relaxed break-words">
+                                Excited to announce our new Cloud Automation & API integration service suite at Oasis of Innovation Technologies! Connect with us today.
+                            </p>
+                            <!-- Dynamic image preview -->
+                            <div id="liveImageContainer" class="rounded-lg overflow-hidden border border-slate-800 max-h-48 bg-slate-950 flex items-center justify-center">
+                                <img id="livePreviewImage" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600" alt="Post Attachment" class="w-full h-40 object-cover" onerror="this.src='https://placehold.co/600x300/0f172a/38bdf8?text=Oasis+Tech+Post'">
+                            </div>
+                            <!-- Fake Like & Comment Row -->
+                            <div class="pt-2 border-t border-slate-800 flex justify-around text-xs text-slate-400">
+                                <span class="hover:text-blue-400 cursor-pointer flex items-center gap-1.5"><i class="fa-regular fa-thumbs-up"></i> Like</span>
+                                <span class="hover:text-blue-400 cursor-pointer flex items-center gap-1.5"><i class="fa-regular fa-comment"></i> Comment</span>
+                                <span class="hover:text-blue-400 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-share"></i> Share</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graph API Console / Response Window -->
+                    <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono font-medium text-cyan-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-terminal"></i> Graph API Output Response
+                            </span>
+                            <button onclick="copyApiResponse()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition">
+                                <i class="fa-regular fa-copy"></i> Copy JSON
+                            </button>
+                        </div>
+                        <div class="bg-slate-950/90 rounded-xl p-3.5 border border-slate-800 font-mono text-[11px] sm:text-xs text-emerald-400 overflow-x-auto h-44 flex flex-col justify-between">
+                            <pre id="apiConsoleOutput" class="whitespace-pre-wrap">{
+  "status": "ready",
+  "endpoint": "POST /me/feed",
+  "app_id": "1537497938182718",
+  "message": "Click 'Execute POST' to simulate Graph API submission."
+}</pre>
+                            <div class="text-[10px] text-slate-500 pt-2 border-t border-slate-800/80 flex justify-between">
+                                <span>HTTP/1.1 200 OK</span>
+                                <span>Latency: ~124ms</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- OAuth Redirect URI Guidance & Interactive Helper Section -->
+    <section id="oauth-guide" class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-cyan-950 text-cyan-400 border border-cyan-800/50">
+                Meta App Configuration Guide
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Configuring Your OAuth Redirect URI</h2>
+            <p class="text-slate-400 text-sm sm:text-base mt-2">
+                Resolve the exact URL you need to enter into your Meta Developer Dashboard under <strong class="text-slate-200">Client OAuth Settings</strong>.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1: Localhost -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-950/60 border border-amber-800/50 flex items-center justify-center text-amber-400 mb-4">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">1. Localhost / Local Dev</h3>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                        If running your web backend locally on your computer or mobile terminal (Node.js, Flask, Django, Vite):
+                    </p>
+                    <div class="mt-4 p-3 bg-slate-900 rounded-xl font-mono text-xs text-cyan-300 break-all border border-slate-800">
+                        http://localhost:3000/auth/facebook/callback
+                    </div>
+                </div>
+                <button onclick="copyText('http://localhost:3000/auth/facebook/callback')" class="w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-regular fa-copy"></i> Copy Localhost URI
+                </button>
+            </div>
+
+            <!-- Card 2: Production Domain -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-950/60 border border-blue-800/50 flex items-center justify-center text-cyan-400 mb-4">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">2. Live Domain / Hosting</h3>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                        When deployed on Vercel, Netlify, Render, or your custom domain (HTTPS required by Meta):
+                    </p>
+                    <div class="mt-4 p-3 bg-slate-900 rounded-xl font-mono text-xs text-cyan-300 break-all border border-slate-800">
+                        https://oasis-hub.com/auth/facebook/callback
+                    </div>
+                </div>
+                <button onclick="copyText('https://oasis-hub.com/auth/facebook/callback')" class="w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-regular fa-copy"></i> Copy Production URI
+                </button>
+            </div>
+
+            <!-- Card 3: JavaScript SDK Option -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-950/60 border border-emerald-800/50 flex items-center justify-center text-emerald-400 mb-4">
+                        <i class="fa-brands fa-js"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">3. Frontend JS SDK Flow</h3>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                        If using direct client-side popup login (<code class="text-cyan-300 font-mono">FB.login</code>), toggle <strong>Login with the JavaScript SDK</strong> to YES and set:
+                    </p>
+                    <div class="mt-4 p-3 bg-slate-900 rounded-xl font-mono text-xs text-emerald-300 break-all border border-slate-800">
+                        https://oasis-hub.com
+                    </div>
+                </div>
+                <button onclick="copyText('https://oasis-hub.com')" class="w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-regular fa-copy"></i> Copy Domain Only
+                </button>
+            </div>
+        </div>
+
+        <!-- Custom URI Builder Tool -->
+        <div class="mt-10 glass-panel p-6 rounded-2xl border border-cyan-500/30">
+            <h4 class="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> Generate Custom Redirect URI
+            </h4>
+            <p class="text-xs text-slate-400 mb-4">Enter your own website domain or tunnel to see the exact value to paste into Meta Dashboard:</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="userCustomDomain" placeholder="e.g. my-awesome-app.vercel.app or tunnel.loca.lt" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400" oninput="buildCustomUri()">
+                <button onclick="copyCustomGeneratedUri()" class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>Copy Config</span>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 font-mono">Generated Target: <span id="generatedUriResult" class="text-cyan-400 font-bold">https://my-app.com/auth/facebook/callback</span></p>
+        </div>
+    </section>
+
+    <!-- Services Showcase Section -->
+    <section id="services" class="py-16 md:py-24 bg-slate-900/40 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-cyan-950 text-cyan-400 border border-cyan-800/50">
+                    Oasis Core Solutions
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Engineered for Scale & Automation</h2>
+                <p class="text-slate-400 text-sm sm:text-base mt-2">
+                    Comprehensive technical development services delivered by Oasis of Innovation Hub.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Service 1 -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-400/50 hover:translate-y-[-4px] transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl mb-4">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Full-Stack Development</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                        Custom web and mobile applications with React, Tailwind, Node.js, and high-performance server architectures.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-400/50 hover:translate-y-[-4px] transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl mb-4">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Meta & Social APIs</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                        Automated posting bots, Graph API feed sync, Facebook Login integration, and WhatsApp conversational chatbots.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-400/50 hover:translate-y-[-4px] transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl mb-4">
+                        <i class="fa-solid fa-cloud-bolt"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Cloud & DevOps</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                        Serverless hosting, containerized microservices, SSL automation, and database scaling for uninterrupted uptime.
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-cyan-400/50 hover:translate-y-[-4px] transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl mb-4">
+                        <i class="fa-solid fa-shield-virus"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Cybersecurity & Tokens</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                        OAuth 2.0 implementation, token encryption, automated token renewal pipelines, and compliance verification.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Consultation Section -->
+    <section id="contact" class="py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-slate-800 relative overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-4 text-center lg:text-left">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Ready to deploy your Facebook integration?</h2>
+                    <p class="text-slate-400 text-sm max-w-xl">
+                        Whether you need automated Page feed synchronization, custom business logins, or a complete web platform, Oasis of Innovation Hub is here to build it.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="mailto:contact@oasisofinnovation.com" class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Get in Touch</span>
+                        </a>
+                        <button onclick="showQuickAlert('Connecting to Meta Support channels...')" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs sm:text-sm transition">
+                            Schedule API Review
+                        </button>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 flex flex-col items-center justify-center p-6 bg-slate-900/60 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-2xl">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-white">Innovation Consultation</p>
+                    <p class="text-xs text-slate-400 text-center">App ID: 1537497938182718 integration assistance available.</p>
+                    <span class="text-xs text-emerald-400 font-mono"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Systems Online</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                    <i class="fa-solid fa-atom"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-white leading-tight">Oasis of Innovation Technologies</p>
+                    <p class="text-[11px] text-slate-500">&copy; 2026 Oasis of Innovation Hub. All rights reserved.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-5 text-slate-400 text-sm">
+                <a href="#services" class="hover:text-cyan-400 transition">Services</a>
+                <a href="#facebook-portal" class="hover:text-cyan-400 transition">Graph API</a>
+                <a href="#oauth-guide" class="hover:text-cyan-400 transition">OAuth Setup</a>
+                <a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition flex items-center gap-1">
+                    Meta Docs <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-cyan-500 transition"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-cyan-500 transition"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-cyan-500 transition"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-cyan-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Engine -->
+    <script>
+        // State tracking
+        let isMetaAuthenticated = false;
+        let simulatedPostCounter = 1042918;
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.className = 'fa-solid fa-bars text-xl';
+            } else {
+                icon.className = 'fa-solid fa-xmark text-xl';
+            }
+        }
+
+        // Toggle Meta Auth state
+        function toggleMetaAuth() {
+            isMetaAuthenticated = !isMetaAuthenticated;
+            const navBtnText = document.getElementById('navLoginText');
+            const mobileBtnText = document.getElementById('mobileLoginText');
+            const heroBadge = document.getElementById('heroAuthBadge');
+            const tokenPreview = document.getElementById('tokenPreview');
+            const authStatusPill = document.getElementById('authStatusPill');
+
+            if (isMetaAuthenticated) {
+                navBtnText.textContent = 'Disconnect Meta';
+                mobileBtnText.textContent = 'Disconnect Meta';
+                heroBadge.textContent = 'Connected';
+                heroBadge.className = 'text-lg font-bold text-emerald-400 mt-1';
+                tokenPreview.textContent = 'EAAV9...428A (Valid)';
+                authStatusPill.className = 'px-3 py-1 rounded-full text-xs font-medium bg-emerald-950 border border-emerald-700 text-emerald-400 flex items-center gap-1.5';
+                authStatusPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>Authenticated</span>';
+                
+                showToast('Meta Login Success', 'Connected to Oasis of innovation hub (ID: 1537497938182718)', 'check');
+            } else {
+                navBtnText.textContent = 'Connect Meta App';
+                mobileBtnText.textContent = 'Connect Meta App';
+                heroBadge.textContent = 'Standby';
+                heroBadge.className = 'text-lg font-bold text-amber-400 mt-1';
+                tokenPreview.textContent = 'None (Dev mode)';
+                authStatusPill.className = 'px-3 py-1 rounded-full text-xs font-medium bg-amber-950 border border-amber-700 text-amber-400 flex items-center gap-1.5';
+                authStatusPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>Dev Standby</span>';
+                
+                showToast('Meta Session Closed', 'Simulated token revoked.', 'info');
+            }
+        }
+
+        // Dynamic post preview updates
+        function updatePostPreview() {
+            const content = document.getElementById('postContent').value;
+            const previewText = document.getElementById('livePreviewText');
+            const charCount = document.getElementById('charCount');
+            const imageUrl = document.getElementById('postImageUrl').value;
+            const previewImage = document.getElementById('livePreviewImage');
+            const imageContainer = document.getElementById('liveImageContainer');
+
+            charCount.textContent = `${content.length} chars`;
+            previewText.textContent = content || 'Write something above to preview the Facebook Page update...';
+
+            if (imageUrl.trim()) {
+                imageContainer.style.display = 'flex';
+                previewImage.src = imageUrl;
+            } else {
+                imageContainer.style.display = 'none';
+            }
+        }
+
+        function updateApiPreview() {
+            const endpoint = document.getElementById('targetEndpoint').value;
+            const pageId = document.getElementById('customPageId').value;
+            const consoleOutput = document.getElementById('apiConsoleOutput');
+
+            consoleOutput.textContent = JSON.stringify({
+                "target_endpoint": endpoint,
+                "target_page_ref": pageId,
+                "app_id": "1537497938182718",
+                "ready_to_send": true
+            }, null, 2);
+        }
+
+        // Simulated Graph API Submit
+        function submitGraphApiPost() {
+            const publishBtn = document.getElementById('publishBtn');
+            const content = document.getElementById('postContent').value.trim();
+            const imageUrl = document.getElementById('postImageUrl').value.trim();
+            const endpoint = document.getElementById('targetEndpoint').value;
+            const consoleOutput = document.getElementById('apiConsoleOutput');
+
+            if (!content) {
+                showToast('Post Empty', 'Please enter a message before executing POST /me/feed', 'exclamation');
+                return;
+            }
+
+            // Button loading animation
+            const originalText = publishBtn.innerHTML;
+            publishBtn.disabled = true;
+            publishBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i><span>Posting to Graph API...</span>';
+
+            setTimeout(() => {
+                simulatedPostCounter++;
+                const newPostId = `1537497938182718_${simulatedPostCounter}`;
+
+                const simulatedResponse = {
+                    "id": newPostId,
+                    "status": "published",
+                    "http_status": 200,
+                    "target_page": document.getElementById('customPageId').value || "oasis.innovation.official",
+                    "timestamp": new Date().toISOString(),
+                    "payload_sent": {
+                        "message": content,
+                        "url": imageUrl || null,
+                        "published": true
+                    },
+                    "graph_version": "v19.0"
+                };
+
+                consoleOutput.textContent = JSON.stringify(simulatedResponse, null, 2);
+                publishBtn.disabled = false;
+                publishBtn.innerHTML = originalText;
+
+                showToast('Post Published to Graph API', `Generated post ID: ${newPostId}`, 'check');
+            }, 800);
+        }
+
+        // Reset composer
+        function clearComposer() {
+            document.getElementById('postContent').value = '';
+            document.getElementById('postImageUrl').value = '';
+            updatePostPreview();
+            showToast('Composer Cleared', 'Draft text and media cleared.', 'info');
+        }
+
+        // Custom Redirect URI Generator
+        function buildCustomUri() {
+            const input = document.getElementById('userCustomDomain').value.trim();
+            const targetSpan = document.getElementById('generatedUriResult');
+            
+            if (!input) {
+                targetSpan.textContent = 'https://my-app.com/auth/facebook/callback';
+                return;
+            }
+
+            // Clean input
+            let cleanDomain = input.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+            let prefix = cleanDomain.includes('localhost') ? 'http://' : 'https://';
+            
+            targetSpan.textContent = `${prefix}${cleanDomain}/auth/facebook/callback`;
+        }
+
+        function copyCustomGeneratedUri() {
+            const uri = document.getElementById('generatedUriResult').textContent;
+            copyText(uri);
+        }
+
+        // Utility: Clipboard copy
+        function copyText(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('Copied to Clipboard', text, 'check');
+        }
+
+        function copyApiResponse() {
+            const text = document.getElementById('apiConsoleOutput').textContent;
+            copyText(text);
+        }
+
+        function showQuickAlert(msg) {
+            showToast('Consultation Desk', msg, 'info');
+        }
+
+        // Toast Notification System
+        let toastTimeout;
+        function showToast(title, message, iconType = 'check') {
+            const toast = document.getElementById('toastNotification');
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            if (iconType === 'check') {
+                iconEl.className = 'text-emerald-400 text-lg mt-0.5';
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            } else if (iconType === 'exclamation') {
+                iconEl.className = 'text-amber-400 text-lg mt-0.5';
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+            } else {
+                iconEl.className = 'text-cyan-400 text-lg mt-0.5';
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+            }
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                closeToast();
+            }, 4000);
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }
+
+        // Initialize setup on load
+        window.onload = function() {
+            updatePostPreview();
+            updateApiPreview();
+        };
+    </script>
+</body>
+</html>
